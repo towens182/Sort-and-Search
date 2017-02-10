@@ -4,54 +4,36 @@
 #include "stdafx.h"
 #include <iostream>
 #include <string>
+#include <time.h>
 
-const int num = 20;
-void Split(int values[], int& splitVal, int first, int last);
+const int num = 1000;
 void QuickSort(int values[], int first, int last);
+void Split(int values[], int& splitVal, int first, int last);
 void Swap(int& one, int& two);
+int BinarySearch(int values[], int first, int last, int key);
+void User(int values[]);
+
 int main()
 {
 	using namespace std;
 
 	int values[num];
-	int input = 0;
-	int mid = 500;
-	int first = 0;
-	int last = (num - 1);
+	int mid = ((num - 1) / 2);
+
 	for (int i = 0; i < num; i++)
 	{
-		values[i] = rand() % 10000;
+		values[i] = rand() % 1000;
 	}
+	QuickSort(values, 0, num - 1);
+	cout << "Quick Sort performed" << endl << endl;
 	cout << "First 20 numbers: ";
-
-	
+		
 	for (int i = 0; i < 20; i++)
 	{
-		cout << values[i] << ", ";
+		cout << values[i] << " ";
 	}
-	cout << endl << "last " << values[num - 1];
-Split(values, mid, first, last);
-cout << "First 20 numbers: ";
-
-
-for (int i = 0; i < 20; i++)
-{
-	cout << values[i] << ", ";
-}
-	try
-	{
-		cout << endl << "Please enter a number between 0 and " << num << ": ";
-		cin >> input;
-		if (input < 0 || input > num)
-		{
-			throw string("Wrong input");
-		}
-	}
-	catch (string err)
-	{
-		cout << err << endl << endl;
-	}
-
+	
+	User(values);
 
 	return 0;
 }
@@ -109,7 +91,7 @@ void QuickSort(int values[], int first, int last)
 
 		Split(values, splitVal, first, last);
 
-		QuickSort(values, splitVal - 1, first);
+		QuickSort(values, first, splitVal - 1);
 		QuickSort(values, splitVal + 1, last);
 	}
 }
@@ -121,3 +103,53 @@ void Swap(int & one, int & two)
 	one = two;
 	two = temp;
 }
+
+int BinarySearch(int values[], int first, int last, int key)
+{
+	if (first <= last)
+	{
+		int mid = (first + last) / 2;
+		if (key == values[mid])
+		{
+			return mid;
+		}
+		else if (key < values[mid])
+		{
+			return BinarySearch(values, first, mid - 1, key);
+		}
+		else
+		{
+			return BinarySearch(values, mid + 1, last, key);
+		}
+	}
+	return -1;
+}
+
+void User(int values[])
+{
+	using namespace std;
+
+	int input;
+	string strInput;
+	cout << endl << "Enter a value between 0 and " << num << ": ";
+	cin >> strInput;
+	try {
+		input = stoi(strInput);
+	}
+	catch (...)
+	{
+		cout << "Invalid Entry" << endl;
+		return;
+	}
+	
+	if (BinarySearch(values, 0, num - 1, input) >= 0)
+	{
+		cout << endl << "Value " << input << " found in position " << BinarySearch(values, 0, num - 1, input) << endl;
+	}
+	else
+	{
+		cout << input << " was not one of the generated numbers" << endl;
+	}
+		User(values);
+}
+
